@@ -1,0 +1,89 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+# Usually PyInstaller files are produced by running PyInstaller, not part of a git repository
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker specific
+Dockerfile
+# Keep .dockerignore in the context, but don't include it in the image itself.
+# Though it doesn't hurt if it's copied, it's not used inside the image.
+.dockerignore
+
+# Databases (if any are committed locally, which they shouldn't be)
+*.db
+*.sqlite3
+*.sqlite3-journal
+
+# Alembic specific (optional, depends on migration strategy)
+# If you run migrations from a separate job/container or before building the final app image,
+# you might not need 'versions' in the app image.
+# For this setup, we assume versions might be needed if running migrations from the app container.
+# So, we don't ignore alembic/versions explicitly here.
+# However, if you have local alembic logs or state files not meant for the image:
+# alembic.log
+
+# OS specific files
+.DS_Store
+Thumbs.db
