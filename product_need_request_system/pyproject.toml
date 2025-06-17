@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "product-need-request-system"
+version = "0.1.0"
+description = "System for managing product need requests, proposals, lifecycles, supplier interaction, and automated evaluations."
+authors = ["AI Developer <ai@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.104.1"
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.23"}
+psycopg2-binary = "^2.9.9" # Or asyncpg = "^0.29.0"
+alembic = "^1.12.1"
+pydantic = {extras = ["email"], version = "^2.5.2"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+celery = "^5.3.6"
+redis = "^5.0.1"
+python-multipart = "^0.0.6" # For OAuth2 form data
+pytest = "^7.4.3"
+httpx = "^0.25.1" # For testing FastAPI endpoints
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
+python_functions = "test_*"
+# Add environment variables for testing, e.g., a separate test database URL
+env = [
+    "DATABASE_URL=postgresql://user:password@localhost/product_db_test", # Test DB
+    "SECRET_KEY=test_secret_key_for_pytest_only", # Consistent secret for tests
+    "ALGORITHM=HS256",
+    "ACCESS_TOKEN_EXPIRE_MINUTES=30"
+]
+# For FastAPI async tests
+asyncio_mode = "auto"
