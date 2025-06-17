@@ -1,0 +1,67 @@
+# Environment variables - IMPORTANT: Never commit .env files with sensitive credentials!
+.env
+.env.*
+!/.env.example # Optionally allow an example .env file if you provide one
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+wheels/
+*.egg
+MANIFEST
+
+# Virtual environment folders
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# IDE / Editor specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.DS_Store # macOS
+
+# Test artifacts and coverage reports
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.prof
+*.lprof
+*.cprof
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Celery / Task Queues
+celerybeat-schedule
+celerybeat.pid
+
+# Log files
+*.log
+logs/
+
+# alembic.ini - uncomment if it might contain sensitive data,
+# though typically it points to env vars for secrets.
+# alembic.ini
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
