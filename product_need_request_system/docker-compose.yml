@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: product_request_db
+    environment:
+      # These variables are substituted from the .env file at the project root,
+      # or use the defaults provided after ':-' if not set in .env
+      POSTGRES_USER: ${POSTGRES_USER:-devuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-product_need_dev_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/ # Persist database data
+    ports:
+      - "5433:5432" # Map host port 5433 to container port 5432 to avoid conflicts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-devuser} -d $${POSTGRES_DB:-product_need_dev_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: product_request_redis
+    ports:
+      - "6379:6379" # Standard Redis port
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: . # Dockerfile is at the project root (where docker-compose.yml is)
+      dockerfile: Dockerfile
+    container_name: product_request_backend
+    # Command to run the FastAPI application using Uvicorn
+    # --reload enables hot reloading for development
+    command: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      # Mount the backend code directory for live updates during development
+      - ./backend:/app/backend
+      # Mount other necessary files if they change and need to be reflected live
+      # - ./database:/app/database # Migrations are part of image, but can mount if editing them
+      # - ./alembic.ini:/app/alembic.ini # Alembic config, part of image
+    ports:
+      - "8000:8000" # Map host port 8000 to container port 8000
+    environment:
+      # Database connection URL using service name 'db' (resolved by Docker's internal DNS)
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-devuser}:${POSTGRES_PASSWORD:-devpassword}@db:5432/${POSTGRES_DB:-product_need_dev_db}
+      # Celery Broker and Result Backend URLs using service name 'redis'
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - SECRET_KEY=${SECRET_KEY:-super_secret_key_that_needs_to_be_in_env_file_123}
+      # Add any other environment variables needed by the backend application
+      # - APP_ENV=development # Example
+    depends_on:
+      db:
+        condition: service_healthy # Wait for DB to be healthy
+      redis:
+        condition: service_healthy # Wait for Redis to be healthy
+    restart: unless-stopped
+    # env_file:
+    #   - .env # This would load all variables directly. Using substitution above is often preferred for clarity.
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: product_request_worker
+    # Command to run the Celery worker.
+    # '-A' points to the Celery app instance.
+    # '-B' runs Celery Beat (scheduler) embedded within the worker. For production, a separate Beat service is recommended.
+    command: celery -A backend.app.core.celery_app.celery_app worker -l info -B
+    volumes:
+      # Mount code for live updates if tasks change during development
+      - ./backend:/app/backend
+      # - ./database:/app/database # If tasks need access to these, though they are in image
+      # - ./alembic.ini:/app/alembic.ini
+    environment:
+      # Same environment variables as the backend, especially for DB and Celery/Redis connections
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-devuser}:${POSTGRES_PASSWORD:-devpassword}@db:5432/${POSTGRES_DB:-product_need_dev_db}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - SECRET_KEY=${SECRET_KEY:-super_secret_key_that_needs_to_be_in_env_file_123}
+      # - APP_ENV=development
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data: # Named volume for persisting PostgreSQL data
+    driver: local

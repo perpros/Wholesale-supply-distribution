@@ -39,6 +39,20 @@ class Settings(BaseSettings):
         # For Pydantic v2, the default is case_sensitive = settings.case_sensitive.
         # Environment variables are typically uppercase, so this should align.
 
+    # Celery and Redis Settings
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+    REDIS_DB_BROKER: int = 0
+    REDIS_DB_RESULT_BACKEND: int = 1 # Use a different DB for results if preferred
+
+    @property
+    def CELERY_BROKER_URL(self) -> str:
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB_BROKER}"
+
+    @property
+    def CELERY_RESULT_BACKEND(self) -> str:
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB_RESULT_BACKEND}"
+
     def get_database_url(self) -> str:
         """
         Constructs or returns the database URL.

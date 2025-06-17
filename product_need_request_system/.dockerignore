@@ -1,0 +1,77 @@
+# Git files
+.git/
+.gitignore
+
+# Python cache and artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+wheels/
+*.egg
+MANIFEST
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment files (should not be in image, use build args or runtime env vars)
+.env
+.env.*
+# Example: Allow an example env file if you provide one and it's safe
+# !.env.example
+
+# Test related files and caches
+.pytest_cache/
+coverage.xml
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+# Depending on strategy, tests/ directory might be excluded if not needed in final image
+# However, if tests are run inside Docker during a multi-stage build, they'd be needed then.
+# For a simple production image, often tests are excluded.
+tests/
+
+# SQLite database files (if used for local dev/testing outside Docker)
+*.db
+*.db-journal
+*.sqlite3
+
+# IDE / Editor specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.DS_Store
+
+# Docker specific files that shouldn't be in the image context itself
+Dockerfile
+docker-compose.yml
+# If you have other docker-compose override files, add them too.
+# docker-compose.*.yml
+
+# Documentation / Readmes (usually not needed in production image)
+README.md
+docs/
+
+# Other project specific temporary or local files
+*.log
+logs/
+celerybeat-schedule
+celerybeat.pid
+# Add any other files/directories that are not needed in the Docker image
+# e.g. local configuration overrides, build scripts not part of the app itself.
+notebooks/
+# alembic.ini is copied by Dockerfile, so no need to ignore here if it's part of build context.
+# requirements.txt is copied by Dockerfile.
+# backend/ is copied by Dockerfile.
+# database/ (migrations) is copied by Dockerfile.

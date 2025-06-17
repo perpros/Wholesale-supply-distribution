@@ -1,0 +1,29 @@
+# Core FastAPI and Web Server
+fastapi==0.104.1
+uvicorn[standard]==0.23.2
+
+# Database and ORM
+sqlalchemy==2.0.22
+psycopg2-binary==2.9.9 # For PostgreSQL
+alembic==1.12.1
+
+# Data Validation and Settings Management
+pydantic==2.4.2
+pydantic-settings==2.0.3
+
+# Security (Password Hashing, JWT)
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+
+# Celery for Background Tasks
+celery==5.3.4
+redis==5.0.1 # Python client for Redis (Celery broker/backend)
+
+# --- Test Dependencies ---
+# These are often kept in a separate requirements-dev.txt or managed by tools like Poetry.
+# For this setup, including them here for simplicity of a single requirements file.
+pytest==7.4.2
+pytest-asyncio==0.21.1 # For testing async FastAPI code if needed directly
+httpx==0.25.0         # Required by FastAPI's TestClient and useful for general HTTP requests
+# pytest-cov           # For code coverage (optional, uncomment to include)
+# sqlalchemy[mypy]     # For SQLAlchemy stubs with Mypy (optional)
